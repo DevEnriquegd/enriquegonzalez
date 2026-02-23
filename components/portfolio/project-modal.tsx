@@ -91,12 +91,23 @@ export function ProjectModal({
         {/* HEADER SECTION */}
         <div className="relative flex items-start gap-4 border-b border-border p-6">
           <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-muted">
-            <Image
-              src={form.image || "/placeholder.svg"}
-              alt={form.title}
-              fill
-              className="object-cover"
-            />
+            {form.image && form.image.startsWith("http") ? (
+              <img
+                src={form.image}
+                alt={form.title}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <Image
+                src={
+                  form.image ||
+                  "https://via.placeholder.com/600x400?text=Project+Placeholder"
+                }
+                alt={form.title}
+                fill
+                className="object-cover"
+              />
+            )}
           </div>
           <div className="flex-1 min-w-0">
             {isEditing ? (
@@ -186,13 +197,15 @@ export function ProjectModal({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-muted-foreground uppercase">
-                    Image URL
+                    Image URL (absolute HTTPS link)
                   </label>
                   <Input
                     value={form.image}
                     onChange={(e) =>
                       setForm({ ...form, image: e.target.value })
                     }
+                    placeholder="https://example.com/images/project-name.jpg"
+                    title="Use a full https:// URL for the project image"
                   />
                 </div>
                 <div className="space-y-1">

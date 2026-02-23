@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import type { Project, Technology } from "@/lib/data"
-import { getProjectTechnologies } from "@/lib/data"
+import Image from "next/image";
+import type { Project, Technology } from "@/lib/data";
+import { getProjectTechnologies } from "@/lib/data";
 
 interface ProjectCardProps {
-  project: Project
-  onClick: () => void
+  project: Project;
+  onClick: () => void;
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
-  const projectTechs = getProjectTechnologies(project).slice(0, 4)
+  const projectTechs = getProjectTechnologies(project).slice(0, 4);
 
   return (
     <button
@@ -18,12 +18,20 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-border bg-card text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
-        <Image
-          src={project.image || "/placeholder.svg"}
-          alt={project.title}
-          fill
-          className="object-cover transition-transform duration-200 group-hover:scale-105"
-        />
+        {project.image && project.image.startsWith("http") ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={project.image || "/placeholder.svg"}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
@@ -51,5 +59,5 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
         </div>
       </div>
     </button>
-  )
+  );
 }
