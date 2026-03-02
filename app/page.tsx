@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { ArrowDownUpIcon, Plus } from "lucide-react";
 import { Header } from "@/components/portfolio/header";
+import SkillSection from "@/components/portfolio/skill-section";
 import { TechFilter } from "@/components/portfolio/tech-filter";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { ProjectModal } from "@/components/portfolio/project-modal";
@@ -112,6 +113,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <SkillSection />
       <main className="mx-auto max-w-[1200px] px-6 py-8">
         <section className="mb-8">
           <TechFilter
