@@ -27,29 +27,42 @@ export const ProjectsSection: React.FC<Props> = ({
   onOpen,
 }) => {
   return (
-    <section className="w-full bg-white border-y border-slate-200 py-16 md:py-24">
+    <section className="w-full bg-white py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-6">
-        {/* Header de sección optimizado */}
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-            Casos de Éxito y Proyectos de Datos
+        {/* Header: Reducimos márgenes drásticamente en mobile */}
+        <div className="mb-6 md:mb-10 text-center px-4">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
+            Proyectos y Casos de Éxito
           </h2>
-          <p className="mt-4 text-base text-slate-600 max-w-2xl mx-auto">
-            Soluciones analíticas y modelos predictivos donde transformé datos
-            en decisiones accionables.
-          </p>
+          <div className="mt-2 flex justify-center">
+            <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
+              Transformando{" "}
+              <span className="text-blue-600 font-semibold">
+                datos complejos
+              </span>{" "}
+              en decisiones accionables de alto impacto.
+            </p>
+          </div>
         </div>
 
-        {/* Zona de Control Compacta: Filtros y Búsqueda */}
-        <div className="mb-10 p-4 ">
-          <TechFilter
-            technologies={usedTechnologies}
-            selectedTechs={selectedTechs}
-            onToggle={onToggleTech}
-            onClear={onClearFilters}
-            searchTerm={searchTerm}
-            onSearch={onSearch}
-          />
+        {/* Zona de Control: Forzamos una sola fila en mobile */}
+        <div className="mb-8 md:mb-12 max-w-4xl mx-auto px-4">
+          <div className="w-full flex items-center gap-2">
+            {" "}
+            {/* Flex para alinear en línea */}
+            <div className="flex-1 min-w-0">
+              {" "}
+              {/* El input crece, pero permite que el filtro quepa */}
+              <TechFilter
+                technologies={usedTechnologies}
+                selectedTechs={selectedTechs}
+                onToggle={onToggleTech}
+                onClear={onClearFilters}
+                searchTerm={searchTerm}
+                onSearch={onSearch}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Grid de Proyectos con Feedback Visual */}
@@ -72,63 +85,62 @@ export const ProjectsSection: React.FC<Props> = ({
 
               const domains = domainMap[project.id] || [];
 
+              /* Refactorización de la Card dentro del .map() */
+
               return (
                 <div
                   key={project.id}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:shadow-xl hover:border-blue-500/30"
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:shadow-xl hover:border-blue-500/40"
                 >
-                  {/* Contenedor de Imagen con Zoom sutil */}
+                  {/* Contenedor de Imagen con Aspect Ratio mas ajustado */}
                   <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-slate-900/0 transition-colors duration-300 group-hover:bg-slate-900/5" />
+                    {/* Badge de Dominio: Estilo sutil pero claro en la esquina */}
+                    <div className="absolute top-3 right-3">
+                      {domains.map((d) => (
+                        <span
+                          key={d}
+                          className="inline-flex items-center rounded-lg bg-blue-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
+                        >
+                          {d}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-1 flex-col p-6">
+                  <div className="flex flex-1 flex-col p-5">
+                    {" "}
+                    {/* Padding reducido para mayor densidad */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
                         {project.title}
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-2">
-                        {/* Tecnologías (Languages & Tools) */}
-                        <div className="flex flex-wrap gap-2 w-full">
-                          {languages.concat(tools).map((t) => (
+                      {/* Tags en una sola línea con scroll lateral si fuera necesario en móvil */}
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {languages.concat(tools).map((t) => (
+                          <span
+                            key={t.id}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-slate-100 bg-slate-50/80 px-2 py-0.5 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-100"
+                          >
                             <span
-                              key={t.id}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-slate-100 bg-slate-50/50 px-3 py-1 text-[11px] font-semibold text-slate-600"
-                            >
-                              <span
-                                className="h-1.5 w-1.5 rounded-full"
-                                style={{ backgroundColor: t.color }}
-                              />
-                              {t.name}
-                            </span>
-                          ))}
-                        </div>
-
-                        {/* Dominios de Negocio (Separación Visual) */}
-                        <div className="mt-2 flex w-full justify-end">
-                          {domains.map((d) => (
-                            <span
-                              key={d}
-                              className="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700 border border-blue-100"
-                            >
-                              {d}
-                            </span>
-                          ))}
-                        </div>
+                              className="h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: t.color }}
+                            />
+                            {t.name}
+                          </span>
+                        ))}
                       </div>
                     </div>
-
-                    {/* Botón CTA con alineación fija */}
-                    <div className="mt-8 flex justify-end pt-4 border-t border-slate-50">
+                    {/* Footer de la card: Alineado y compacto */}
+                    <div className="mt-6 flex justify-end">
                       <button
                         onClick={() => onOpen(project)}
-                        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95 cursor-pointer"
+                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-xs font-bold text-white transition-all hover:bg-blue-700 active:scale-95 shadow-md shadow-blue-500/20"
                       >
                         Ver detalle
                       </button>

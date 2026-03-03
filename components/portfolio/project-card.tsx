@@ -13,97 +13,53 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
   const projectTechs = getProjectTechnologies(project).slice(0, 4);
 
   return (
-  <div className="min-h-screen bg-background">
-    <Header />
-    <SkillSection />
-
-    {/* SECCIÓN DE PROYECTOS: La sacamos del main limitado para que el fondo blanco sea total */}
-    <section className="w-full bg-white py-20 border-y border-border">
-      <div className="mx-auto max-w-6xl px-6">
-        
-        {/* Encabezado de sección */}
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            Casos de Éxito y Proyectos de Datos
-          </h2>
-          <p className="mt-3 text-gray-600">
-            Proyectos donde transformé datos en decisiones accionables.
-          </p>
-        </div>
-
-        {/* Filtros */}
-        <div className="mb-10">
-          <TechFilter
-            technologies={usedTechnologies}
-            selectedTechs={selectedTechs}
-            onToggle={handleToggleTech}
-            onClear={handleClearFilters}
-            searchTerm={searchTerm}
-            onSearch={setSearchTerm}
+    <button
+      onClick={onClick}
+      className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-border bg-card text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+    >
+      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+        {project.image && project.image.startsWith("http") ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
           />
-        </div>
-
-        {/* Grid de Proyectos */}
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {displayedProjects.map((project) => {
-            // ... (Tus constantes de filtrado de techs se mantienen igual)
-
-            return (
-              <div
-                key={project.id}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all hover:shadow-xl cursor-pointer"
-                onClick={() => setSelectedProject(project)}
-              >
-                {/* Imagen con hover unificado */}
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  {/* Overlay sutil al pasar el mouse */}
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/5" />
-                </div>
-
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    {project.title}
-                  </h3>
-
-                  {/* Tags (Idiomas, Herramientas, Dominios) */}
-                  <div className="flex flex-wrap items-center gap-2 mb-6">
-                    {/* ... tus mapeos de languages, tools y domains ... */}
-                  </div>
-
-                  {/* BOTÓN ALINEADO A LA DERECHA */}
-                  <div className="mt-auto flex justify-end">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Evita doble clic con el div padre
-                        setSelectedProject(project);
-                      }}
-                      className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-sm active:scale-95"
-                    >
-                      Ver detalle
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        ) : (
+          <Image
+            src={project.image || "/placeholder.svg"}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+          />
+        )}
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
+          {project.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5">
+          {projectTechs.map((tech: Technology) => (
+            <span
+              key={tech.id}
+              className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-[#475569]"
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: tech.color }}
+              />
+              {tech.name}
+            </span>
+          ))}
+          {project.technologies.length > 4 && (
+            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-500 border border-slate-200">
+              +{project.technologies.length - 4}
+            </span>
+          )}
         </div>
       </div>
-    </section>
-
-    {/* El resto de componentes (Footer, Modales) se mantienen igual */}
-    <footer className="border-t py-12 text-center bg-slate-50">
-      <p className="text-sm text-slate-500">
-        Data Insights Hub — Designed for scalability
-      </p>
-    </footer>
-
-    <ProjectModal ... />
-    <CreateProjectModal ... />
-  </div>
-);
+    </button>
+  );
 }
+
+export default ProjectCard;
