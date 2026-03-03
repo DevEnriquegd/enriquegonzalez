@@ -14,6 +14,7 @@ import {
   Edit,
   Check,
   Trash,
+  Github,
 } from "lucide-react";
 import type { Project, Technology } from "@/lib/data";
 import {
@@ -80,277 +81,341 @@ export function ProjectModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50">
+      {/* Backdrop */}
       <div
-        className="relative max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-xl bg-card shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* HEADER SECTION */}
-        <div className="relative flex items-start gap-4 border-b border-border p-6">
-          <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-muted">
-            {form.image && form.image.startsWith("http") ? (
-              <img
-                src={form.image}
-                alt={form.title}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <Image
-                src={
-                  form.image ||
-                  "https://via.placeholder.com/600x400?text=Project+Placeholder"
-                }
-                alt={form.title}
-                fill
-                className="object-cover"
-              />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            {isEditing ? (
-              <Input
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="text-xl font-semibold"
-              />
-            ) : (
-              <h2 className="text-xl font-semibold text-foreground">
-                {project.title}
-              </h2>
-            )}
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {getProjectTechnologies(form).map((tech) => (
-                <span
-                  key={tech.id}
-                  className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
-                >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: tech.color }}
-                  />
-                  {tech.name}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleSave}
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
-                >
-                  <Check className="h-4 w-4" /> Save
-                </button>
-                <button
-                  onClick={() => {
-                    if (!form) return;
-                    if (!onDelete) return;
-                    if (
-                      confirm("Delete this project? This cannot be undone.")
-                    ) {
-                      onDelete(form.id);
-                      onClose();
-                    }
-                  }}
-                  className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-1 text-sm font-medium text-white"
-                >
-                  <Trash className="h-4 w-4" /> Delete
-                </button>
-                <button
-                  onClick={() => {
-                    setForm(project);
-                    setIsEditing(false);
-                  }}
-                  className="inline-flex items-center gap-2 rounded-lg border border-input px-3 py-1 text-sm"
-                >
-                  <X className="h-4 w-4" /> Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-input px-3 py-1 text-sm"
-                >
-                  <Edit className="h-4 w-4" /> Edit
-                </button>
-                <button
-                  onClick={onClose}
-                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
-        {/* CONTENT AREA */}
-        <div className="max-h-[65vh] overflow-y-auto p-6 space-y-8">
-          {/* GITHUB & IMAGE URLS */}
-          <section className="space-y-4">
-            {isEditing ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">
-                    Image URL (absolute HTTPS link)
-                  </label>
-                  <Input
-                    value={form.image}
-                    onChange={(e) =>
-                      setForm({ ...form, image: e.target.value })
-                    }
-                    placeholder="https://example.com/images/project-name.jpg"
-                    title="Use a full https:// URL for the project image"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">
-                    GitHub Repository URL
-                  </label>
-                  <Input
-                    value={form.githubUrl}
-                    onChange={(e) =>
-                      setForm({ ...form, githubUrl: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-            ) : (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+      {/* Slide-over panel */}
+      <aside className="absolute inset-y-0 right-0 flex max-w-full">
+        <div className="w-screen max-w-2xl">
+          <div className="flex h-full flex-col bg-card shadow-2xl">
+            {/* Header with background image */}
+            <header className="relative h-72 w-full shrink-0 overflow-hidden">
+              {/* Fondo e Imagen (Igual al anterior) */}
+              {form.image ? (
+                <img
+                  src={form.image}
+                  alt={form.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-slate-900" />
+              )}
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent" />
+
+              {/* Botón de cierre (Igual) */}
+              <button
+                onClick={onClose}
+                className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-md hover:bg-black/40"
               >
-                <ExternalLink className="h-4 w-4" /> View on GitHub
-              </a>
-            )}
-          </section>
+                <X className="h-5 w-5" />
+              </button>
 
-          {/* BUSINESS VISION */}
-          <section className="space-y-4">
-            <h3 className="flex items-center gap-2 text-lg font-semibold">
-              <Target className="h-5 w-5 text-primary" /> Business Vision
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {(["problem", "decision", "impact"] as const).map((key) => (
-                <div
-                  key={key}
-                  className="rounded-lg border border-border bg-muted/30 p-4"
-                >
-                  <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground capitalize">
-                    {key === "problem" ? (
-                      <Lightbulb className="h-4 w-4" />
-                    ) : key === "decision" ? (
-                      <Target className="h-4 w-4" />
+              {/* CONTENIDO DEL HEADER */}
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                  {/* Información del Proyecto */}
+                  <div className="flex-1 space-y-3">
+                    {isEditing ? (
+                      <Input
+                        value={form.title}
+                        onChange={(e) =>
+                          setForm({ ...form, title: e.target.value })
+                        }
+                        className="bg-white/10 text-xl font-bold text-white border-white/20"
+                      />
                     ) : (
-                      <TrendingUp className="h-4 w-4" />
+                      <h2 className="text-3xl font-bold tracking-tight text-white drop-shadow-md">
+                        {form.title}
+                      </h2>
                     )}
-                    {key}
-                  </div>
-                  {isEditing ? (
-                    <Textarea
-                      value={form.businessVision[key]}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          businessVision: {
-                            ...form.businessVision,
-                            [key]: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  ) : (
-                    <p className="text-sm leading-relaxed">
-                      {project.businessVision[key]}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
 
-          {/* TECHNICAL DETAIL */}
-          <section className="space-y-4">
-            <h3 className="flex items-center gap-2 text-lg font-semibold">
-              <Code className="h-5 w-5 text-primary" /> Technical Detail
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {(["architecture", "stack", "dataFlow"] as const).map((key) => (
-                <div
-                  key={key}
-                  className="rounded-lg border border-border bg-muted/30 p-4"
-                >
-                  <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                    {key === "architecture" ? (
-                      <Layers className="h-4 w-4" />
-                    ) : key === "stack" ? (
-                      <Code className="h-4 w-4" />
+                    <div className="flex flex-wrap gap-2">
+                      {getProjectTechnologies(form)
+                        .slice(0, 5)
+                        .map((t) => (
+                          <span
+                            key={t.id}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-md border border-white/10"
+                          >
+                            <span
+                              className="h-2 w-2 rounded-full"
+                              style={{ backgroundColor: t.color }}
+                            />
+                            {t.name}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* ACCIONES PRINCIPALES (Aquí integramos GitHub) */}
+                  <div className="flex items-center gap-3">
+                    {!isEditing && (
+                      <a
+                        href={form.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 active:scale-95"
+                      >
+                        <Github className="h-4 w-4" />
+                        <span>Repositorio</span>
+                      </a>
+                    )}
+
+                    <div className="h-8 w-px bg-white/20 mx-1 hidden md:block"></div>
+
+                    {isEditing ? (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSave}
+                          className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600"
+                        >
+                          <Check className="h-4 w-4" /> Guardar
+                        </button>
+                        <button
+                          onClick={() => setIsEditing(false)}
+                          className="rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
                     ) : (
-                      <GitBranch className="h-4 w-4" />
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md border border-white/10 hover:bg-white/20"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
                     )}
-                    <span className="capitalize">
-                      {key.replace(/([A-Z])/g, " $1")}
-                    </span>
                   </div>
-                  {isEditing ? (
-                    <Textarea
-                      value={form.technicalDetail[key]}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          technicalDetail: {
-                            ...form.technicalDetail,
-                            [key]: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  ) : (
-                    <p className="text-sm leading-relaxed">
-                      {project.technicalDetail[key]}
-                    </p>
-                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* TECH STACK SELECTOR */}
-          {isEditing && (
-            <section className="pt-6 border-t">
-              <h4 className="text-sm font-semibold mb-4 text-muted-foreground uppercase">
-                Update Technologies
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {allTechnologies.map((tech) => (
-                  <button
-                    key={tech.id}
-                    onClick={() => toggleTech(tech.id)}
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium border transition-all ${
-                      form.technologies.includes(tech.id)
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-background text-muted-foreground"
-                    }`}
-                  >
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: tech.color }}
-                    />
-                    {tech.name}
-                  </button>
-                ))}
               </div>
-            </section>
-          )}
+            </header>
+
+            {/* Body (scrollable) */}
+            <div className="overflow-y-auto p-6">
+              {/* Sección: Visión de Negocio */}
+              <section className="mb-10 space-y-6">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Target className="h-5 w-5 text-blue-600" />
+                  <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                    Visión de Negocio
+                  </h3>
+                </div>
+
+                <div className="space-y-5">
+                  {[
+                    {
+                      key: "problem",
+                      label: "Contexto y Desafío",
+                      icon: Lightbulb,
+                      color: "amber",
+                      bg: "bg-amber-50/50",
+                      border: "border-amber-100",
+                      iconColor: "text-amber-600",
+                    },
+                    {
+                      key: "decision",
+                      label: "Estrategia Analítica",
+                      icon: Target,
+                      color: "blue",
+                      bg: "bg-blue-50/50",
+                      border: "border-blue-100",
+                      iconColor: "text-blue-600",
+                    },
+                    {
+                      key: "impact",
+                      label: "Valor y Resultados",
+                      icon: TrendingUp,
+                      color: "emerald",
+                      bg: "bg-emerald-50/50",
+                      border: "border-emerald-100",
+                      iconColor: "text-emerald-600",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.key}
+                      className={`group flex items-start gap-5 rounded-2xl border ${item.border} ${item.bg} p-5 transition-all hover:shadow-md hover:bg-white`}
+                    >
+                      {/* Icono con contenedor estilizado */}
+                      <div className="shrink-0 rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-200/50 transition-transform group-hover:scale-110">
+                        <item.icon className={`h-6 w-6 ${item.iconColor}`} />
+                      </div>
+
+                      {/* Contenido de la Card */}
+                      <div className="flex-1 space-y-1">
+                        <div
+                          className={`text-xs font-black uppercase tracking-widest ${item.iconColor}/80`}
+                        >
+                          {item.label}
+                        </div>
+
+                        {isEditing ? (
+                          <Textarea
+                            value={
+                              form.businessVision[
+                                item.key as keyof typeof form.businessVision
+                              ]
+                            }
+                            onChange={(e) =>
+                              setForm({
+                                ...form,
+                                businessVision: {
+                                  ...form.businessVision,
+                                  [item.key]: e.target.value,
+                                },
+                              })
+                            }
+                            className="mt-2 min-h-25 bg-white border-slate-200 focus:ring-blue-500"
+                            placeholder={`Describe el ${item.label.toLowerCase()}...`}
+                          />
+                        ) : (
+                          <p className="text-sm leading-relaxed text-slate-600 font-medium">
+                            {form.businessVision[
+                              item.key as keyof typeof form.businessVision
+                            ] || "Información no especificada."}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Sección: Detalles de Ingeniería */}
+              <section className="space-y-6 pt-4">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Code className="h-5 w-5 text-indigo-600" />
+                  <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                    Ingeniería del Proyecto
+                  </h3>
+                </div>
+
+                <div className="relative space-y-0 pl-10">
+                  {/* Línea vertical con gradiente para guiar el ojo */}
+                  <div className="absolute left-4.75 top-2 bottom-2 w-0.5 bg-linear-to-b from-indigo-500 via-slate-200 to-slate-200" />
+
+                  {[
+                    {
+                      key: "architecture",
+                      label: "Arquitectura de Solución",
+                      icon: Layers,
+                      color: "indigo",
+                    },
+                    {
+                      key: "stack",
+                      label: "Ecosistema Tecnológico",
+                      icon: Code,
+                      color: "blue",
+                    },
+                    {
+                      key: "dataFlow",
+                      label: "Pipeline de Datos (ETL/Modelado)",
+                      icon: GitBranch,
+                      color: "violet",
+                    },
+                  ].map((item, idx) => (
+                    <div key={item.key} className="relative pb-10 last:pb-0">
+                      {/* Nodo interactivo */}
+                      <div className="absolute -left-7.75 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white border-2 border-slate-200 shadow-sm transition-colors group-hover:border-indigo-500">
+                        <div className="h-2 w-2 rounded-full bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.4)]" />
+                      </div>
+
+                      <div className="group flex flex-col gap-3">
+                        <div className="flex items-center gap-2 text-slate-800 transition-colors group-hover:text-indigo-600">
+                          <item.icon className="h-4 w-4" />
+                          <span className="text-sm font-bold uppercase tracking-wider">
+                            {item.label}
+                          </span>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-slate-200">
+                          {isEditing ? (
+                            <Textarea
+                              value={
+                                form.technicalDetail[
+                                  item.key as keyof typeof form.technicalDetail
+                                ]
+                              }
+                              onChange={(e) =>
+                                setForm({
+                                  ...form,
+                                  technicalDetail: {
+                                    ...form.technicalDetail,
+                                    [item.key]: e.target.value,
+                                  },
+                                })
+                              }
+                              className="min-h-25 border-none p-0 focus-visible:ring-0 text-sm leading-relaxed"
+                              placeholder={`Detalla la ${item.label.toLowerCase()}...`}
+                            />
+                          ) : (
+                            <p className="text-sm leading-relaxed text-slate-600">
+                              {form.technicalDetail[
+                                item.key as keyof typeof form.technicalDetail
+                              ] || "Detalle técnico pendiente."}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Technology selector when editing */}
+              {isEditing && (
+                <section className="pt-8 mt-4 border-t border-slate-100">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                        Gestión de Stack Tecnológico
+                      </h4>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        {form.technologies.length} seleccionadas
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2.5">
+                      {allTechnologies.map((tech) => {
+                        const isSelected = form.technologies.includes(tech.id);
+                        return (
+                          <button
+                            key={tech.id}
+                            onClick={() => toggleTech(tech.id)}
+                            className={`
+                group inline-flex items-center gap-2.5 rounded-xl px-3.5 py-1.5 text-xs font-bold border transition-all duration-200
+                ${
+                  isSelected
+                    ? "bg-slate-900 text-white border-slate-900 shadow-md shadow-slate-200"
+                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:bg-slate-50"
+                }
+              `}
+                          >
+                            <span
+                              className={`h-2 w-2 rounded-full transition-transform group-hover:scale-125 ${isSelected ? "ring-2 ring-white/20" : ""}`}
+                              style={{ backgroundColor: tech.color }}
+                            />
+                            {tech.name}
+                            {isSelected && (
+                              <Check className="h-3 w-3 ml-1 text-blue-400" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      </aside>
     </div>
   );
 }
+
+export default ProjectModal;

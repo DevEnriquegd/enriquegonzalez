@@ -22,7 +22,7 @@ export const SkillSection = () => {
 
         {/* Bento Grid Optimizado */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* 1. DATA CORE - Énfasis en legibilidad */}
+          {/* 1. DATA CORE - Ahora unificado cromáticamente */}
           <div className="md:col-span-2 rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-blue-500/40">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -43,7 +43,7 @@ export const SkillSection = () => {
               ].map((s) => (
                 <span
                   key={s}
-                  className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700"
+                  className="px-3 py-1.5 bg-blue-500/10 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-semibold border border-blue-500/20 transition-colors hover:bg-blue-500/20"
                 >
                   {s}
                 </span>
@@ -95,19 +95,26 @@ export const SkillSection = () => {
             </div>
           </div>
 
-          {/* 4. WORKFLOW */}
+          {/* 4. WORKFLOW - Unificado con tags para consistencia */}
           <div className="rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-orange-500/40">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-orange-500/10 rounded-lg">
-                <GitBranch className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                <GitBranch className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
-              <h4 className="font-bold text-slate-800 dark:text-slate-100">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 Workflow
-              </h4>
+              </h3>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-              Git, GitHub, Google Colab, VS Code
-            </p>
+            <div className="flex flex-wrap gap-2">
+              {["Git", "GitHub", "Google Colab", "VS Code"].map((s) => (
+                <span
+                  key={s}
+                  className="px-3 py-1.5 bg-orange-500/10 text-orange-700 dark:text-orange-400 rounded-lg text-xs font-semibold border border-orange-500/20"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* 5. DESIGN & PROTOTYPING */}
