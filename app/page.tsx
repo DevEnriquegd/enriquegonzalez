@@ -125,10 +125,60 @@ export default function HomePage() {
         onSearch={setSearchTerm}
         onOpen={(p) => setSelectedProject(p)}
       />
-      <footer className="border-t py-8 text-center">
-        <p className="text-sm text-[#94A3B8]">
-          Data Insights Hub — Designed for scalability
-        </p>
+      <footer className="border-t border-slate-100 bg-background py-14">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex flex-col items-center justify-between gap-10 md:flex-row md:items-start">
+            {/* Identidad y Propuesta de Valor */}
+            <div className="flex flex-col items-center md:items-start space-y-4">
+              <div>
+                <p className="text-xl font-extrabold text-slate-900 tracking-tight">
+                  Enrique Gonzalez<span className="text-blue-600">.</span>
+                </p>
+                <p className="mt-2 text-sm text-slate-600 max-w-xs leading-relaxed text-center md:text-left">
+                  Data Analyst & Business Intelligence. Transformando datos
+                  complejos en insights estratégicos.
+                </p>
+              </div>
+            </div>
+
+            {/* Conectividad y Footer Info */}
+            <div className="flex flex-col items-center md:items-end space-y-8">
+              {/* Enlaces Reales con Interacción Refinada */}
+              <div className="flex gap-6">
+                {[
+                  {
+                    name: "LinkedIn",
+                    url: "https://www.linkedin.com/in/enriquegonzalez-data/",
+                  },
+                  { name: "GitHub", url: "https://github.com/DevEnriquegd" },
+                  { name: "Email", url: "mailto:enriquegdiaz08@gmail.com" },
+                ].map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] font-bold uppercase tracking-widest text-slate-500 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1 transition-all duration-300"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+
+              {/* Stack y Ubicación */}
+              <div className="text-center md:text-right space-y-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                  SQL · Python · Power BI · Machine Learning
+                </p>
+                <div className="flex flex-col md:flex-row items-center justify-end gap-1 md:gap-3 text-xs text-slate-400 font-medium">
+                  <span>© 2026 Enrique Gonzalez</span>
+                  <span className="hidden md:inline text-slate-300">•</span>
+                  <span>Trujillo, Perú</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
       <ProjectModal
         project={selectedProject}

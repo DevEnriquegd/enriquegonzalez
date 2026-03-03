@@ -79,7 +79,7 @@ export function Header() {
                   },
                   {
                     icon: Linkedin,
-                    href: "https://www.linkedin.com/in/enrique-gonzalez-diaz/",
+                    href: "https://www.linkedin.com/in/enriquegonzalez-data/",
                     label: "LinkedIn",
                   },
                 ].map((social) => (
