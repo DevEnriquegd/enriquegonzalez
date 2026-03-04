@@ -1,8 +1,17 @@
 "use client";
 
 import { Github, Linkedin, Mail, FileText, MapPin } from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useState } from "react";
 
 export function Header() {
+  const { data: session } = useSession();
+  const [showCredForm, setShowCredForm] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   return (
     <header className="border-b border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-10 md:py-16">
@@ -90,6 +99,104 @@ export function Header() {
                     <social.icon className="h-5 w-5" />
                   </a>
                 ))}
+
+                <div className="ml-2 flex items-center gap-2">
+                  {session?.user?.isAdmin && (
+                    <span className="rounded-full bg-blue-50 text-blue-700 px-2 py-1 text-xs font-semibold">
+                      Admin
+                    </span>
+                  )}
+
+                  <div className="relative">
+                    <button
+                      onClick={async () => {
+                        if (session) {
+                          await signOut();
+                          return;
+                        }
+
+                        // Toggle credential form for simple login
+                        setShowCredForm((s) => !s);
+                      }}
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white dark:bg-slate-950 px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 transition-all hover:bg-slate-50 dark:hover:bg-slate-900 active:scale-95"
+                    >
+                      {session ? (
+                        <span className="text-sm">Cerrar sesión</span>
+                      ) : (
+                        <span className="text-sm">Iniciar sesión</span>
+                      )}
+                    </button>
+
+                    {showCredForm && !session && (
+                      <div className="absolute right-0 mt-2 w-72 rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
+                        <label className="block text-xs font-medium text-slate-600">
+                          Email
+                        </label>
+                        <input
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="mt-1 mb-2 w-full rounded-md border px-2 py-1"
+                        />
+
+                        <label className="block text-xs font-medium text-slate-600">
+                          Contraseña
+                        </label>
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="mt-1 mb-3 w-full rounded-md border px-2 py-1"
+                        />
+
+                        {error && (
+                          <div className="mb-2 text-sm text-red-600">
+                            {error}
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-2">
+                          <button
+                            onClick={async () => {
+                              setLoading(true);
+                              setError(null);
+                              try {
+                                const res: any = await signIn("credentials", {
+                                  redirect: false,
+                                  email,
+                                  password,
+                                });
+
+                                if (res?.ok) {
+                                  setShowCredForm(false);
+                                  window.location.reload();
+                                } else {
+                                  setError(
+                                    res?.error || "Credenciales inválidas",
+                                  );
+                                }
+                              } catch (err) {
+                                setError("Error en el inicio de sesión");
+                              } finally {
+                                setLoading(false);
+                              }
+                            }}
+                            disabled={loading}
+                            className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-60"
+                          >
+                            {loading ? "Entrando..." : "Entrar"}
+                          </button>
+
+                          <button
+                            onClick={() => setShowCredForm(false)}
+                            className="text-sm text-slate-600 underline"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -15,18 +15,8 @@ import {
 } from "@/lib/data";
 
 export default function HomePage() {
-  // 1. Estado inicial con persistencia en LocalStorage
-  const [projectsList, setProjectsList] = useState<Project[]>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const raw = localStorage.getItem("data-showcase:projects");
-        if (raw) return JSON.parse(raw) as Project[];
-      } catch (e) {
-        console.error("Error parsing local storage", e);
-      }
-    }
-    return initialProjects;
-  });
+  // 1. Estado inicial: vací­o; cargaremos desde la API al montar
+  const [projectsList, setProjectsList] = useState<Project[]>([]);
 
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -43,6 +33,44 @@ export default function HomePage() {
       JSON.stringify(projectsList),
     );
   }, [projectsList]);
+
+  // 2b. Al montar, intentamos cargar desde la API (server / data/projects.json).
+  // Si falla, nos rescatamos desde localStorage o desde `initialProjects`.
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/projects", {
+          credentials: "same-origin",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted) setProjectsList((data as Project[]) || []);
+          return;
+        }
+      } catch (err) {
+        // ignore and fallback
+      }
+
+      // Fallback: localStorage -> initialProjects
+      if (typeof window !== "undefined") {
+        try {
+          const raw = localStorage.getItem("data-showcase:projects");
+          if (raw)
+            return mounted && setProjectsList(JSON.parse(raw) as Project[]);
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      if (mounted) setProjectsList(initialProjects);
+    };
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // 3. Lógica de negocio (Filtrado y Ordenamiento)
   const usedTechnologies = useMemo(() => {

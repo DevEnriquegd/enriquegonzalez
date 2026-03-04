@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { X, Plus } from "lucide-react";
 import type { Project } from "@/lib/data";
 import { technologies } from "@/lib/data";
@@ -52,6 +53,9 @@ export function CreateProjectModal({
   onClose,
   onSave,
 }: CreateProjectModalProps) {
+  const { data: session } = useSession();
+
+  // Hooks must run unconditionally to preserve hook order between renders.
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errors, setErrors] = useState<{ title?: string }>({});
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -73,6 +77,10 @@ export function CreateProjectModal({
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen, handleEscape]);
+
+  const allowEdit =
+    process.env.NEXT_PUBLIC_ALLOW_EDIT === "true" || !!session?.user?.isAdmin;
+  if (!allowEdit) return null;
 
   const handleFileChange = (file?: File) => {
     if (!file) return;
@@ -114,9 +122,27 @@ export function CreateProjectModal({
       githubUrl: formData.githubUrl || "",
     };
 
-    onSave(newProject);
-    setFormData(initialFormData);
-    onClose();
+    // POST to server API; onSave will update parent state when returned
+    fetch("/api/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(newProject),
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Error creating project");
+        const created = await r.json();
+        onSave(created);
+        setFormData(initialFormData);
+        onClose();
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        alert(
+          "No autorizado o error al crear. Asegúrate de estar autenticado como admin.",
+        );
+      });
   };
 
   const handleTechToggle = (techId: string) => {

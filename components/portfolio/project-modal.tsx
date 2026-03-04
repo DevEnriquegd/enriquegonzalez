@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import {
   X,
@@ -39,6 +40,9 @@ export function ProjectModal({
 }: ProjectModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState<Project | null>(project);
+  const { data: session } = useSession();
+  const allowEdit =
+    process.env.NEXT_PUBLIC_ALLOW_EDIT === "true" || !!session?.user?.isAdmin;
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -63,8 +67,28 @@ export function ProjectModal({
   if (!project || !form) return null;
 
   const handleSave = () => {
-    if (onSave) onSave(form);
-    setIsEditing(false);
+    if (!form) return;
+
+    // Call API to update project
+    fetch(`/api/projects/${form.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(form),
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error("Error updating project");
+        const updated = await r.json();
+        if (onSave) onSave(updated);
+        setIsEditing(false);
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error(err);
+        alert(
+          "Error al guardar el proyecto. Asegúrate de estar autenticado y con permisos.",
+        );
+      });
   };
 
   const toggleTech = (id: string) => {
@@ -108,18 +132,30 @@ export function ProjectModal({
 
               {/* Botones de acción: eliminar + cerrar */}
               <div className="absolute right-4 top-4 z-20 flex gap-2">
-                {onDelete && isEditing && (
+                {onDelete && isEditing && allowEdit && (
                   <button
-                    onClick={() => {
-                      // confirm before deleting
-                      // eslint-disable-next-line no-restricted-globals
+                    onClick={async () => {
+                      if (!form) return;
                       if (
-                        confirm(
+                        !confirm(
                           "¿Eliminar este proyecto? Esta acción no se puede deshacer.",
                         )
-                      ) {
+                      )
+                        return;
+                      try {
+                        const res = await fetch(`/api/projects/${form.id}`, {
+                          method: "DELETE",
+                          credentials: "same-origin",
+                        });
+                        if (!res.ok) throw new Error("Delete failed");
                         onDelete(form.id);
                         onClose();
+                      } catch (err) {
+                        // eslint-disable-next-line no-console
+                        console.error(err);
+                        alert(
+                          "Error al eliminar el proyecto. Asegúrate de estar autenticado y con permisos.",
+                        );
                       }
                     }}
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md hover:bg-red-600/90"
@@ -152,6 +188,15 @@ export function ProjectModal({
                           }
                           className="bg-white/10 text-xl font-bold text-white border-white/20 focus:border-white"
                           placeholder="Título del proyecto"
+                        />
+                        {/* Input para la URL de GitHub */}
+                        <Input
+                          value={form.githubUrl}
+                          onChange={(e) =>
+                            setForm({ ...form, githubUrl: e.target.value })
+                          }
+                          className="bg-white/10 text-xs font-medium text-white/70 border-white/10 focus:border-white h-8"
+                          placeholder="https://github.com/usuario/repositorio"
                         />
                         {/* NUEVO: Input para la URL de la Imagen */}
                         <Input
@@ -203,29 +248,31 @@ export function ProjectModal({
 
                     <div className="h-8 w-px bg-white/20 mx-1 hidden md:block"></div>
 
-                    {isEditing ? (
-                      <div className="flex gap-2">
+                    {allowEdit ? (
+                      isEditing ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleSave}
+                            className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600"
+                          >
+                            <Check className="h-4 w-4" /> Guardar
+                          </button>
+                          <button
+                            onClick={() => setIsEditing(false)}
+                            className="rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          onClick={handleSave}
-                          className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600"
+                          onClick={() => setIsEditing(true)}
+                          className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md border border-white/10 hover:bg-white/20"
                         >
-                          <Check className="h-4 w-4" /> Guardar
+                          <Edit className="h-4 w-4" />
                         </button>
-                        <button
-                          onClick={() => setIsEditing(false)}
-                          className="rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md"
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur-md border border-white/10 hover:bg-white/20"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                    )}
+                      )
+                    ) : null}
                   </div>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import { TechFilter } from "@/components/portfolio/tech-filter";
 import type { Project, Technology } from "@/lib/data";
 import { getProjectTechnologies } from "@/lib/data";
@@ -31,6 +32,9 @@ export const ProjectsSection: React.FC<Props> = ({
   onCreate,
 }) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { data: session } = useSession();
+  const allowEdit =
+    process.env.NEXT_PUBLIC_ALLOW_EDIT === "true" || !!session?.user?.isAdmin;
   return (
     <section className="w-full bg-white py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-6">
@@ -68,20 +72,24 @@ export const ProjectsSection: React.FC<Props> = ({
                 />
               </div>
               {/* El componente ahora es h-10 internamente */}
-              <div className="shrink-0">
-                <UploadProject onClick={() => setIsCreateOpen(true)} />
-              </div>
+              {allowEdit && (
+                <div className="shrink-0">
+                  <UploadProject onClick={() => setIsCreateOpen(true)} />
+                </div>
+              )}
             </div>
           </div>
 
           {/* Modal de creación */}
-          <CreateProjectModal
-            isOpen={isCreateOpen}
-            onClose={() => setIsCreateOpen(false)}
-            onSave={(p) => {
-              onCreate?.(p);
-            }}
-          />
+          {allowEdit && (
+            <CreateProjectModal
+              isOpen={isCreateOpen}
+              onClose={() => setIsCreateOpen(false)}
+              onSave={(p) => {
+                onCreate?.(p);
+              }}
+            />
+          )}
         </div>
 
         {/* Grid de Proyectos con Feedback Visual */}
