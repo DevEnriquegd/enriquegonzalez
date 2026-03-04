@@ -106,13 +106,36 @@ export function ProjectModal({
               )}
               <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/40 to-transparent" />
 
-              {/* Botón de cierre (Igual) */}
-              <button
-                onClick={onClose}
-                className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-md hover:bg-black/40"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              {/* Botones de acción: eliminar + cerrar */}
+              <div className="absolute right-4 top-4 z-20 flex gap-2">
+                {onDelete && isEditing && (
+                  <button
+                    onClick={() => {
+                      // confirm before deleting
+                      // eslint-disable-next-line no-restricted-globals
+                      if (
+                        confirm(
+                          "¿Eliminar este proyecto? Esta acción no se puede deshacer.",
+                        )
+                      ) {
+                        onDelete(form.id);
+                        onClose();
+                      }
+                    }}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md hover:bg-red-600/90"
+                    aria-label="Eliminar proyecto"
+                  >
+                    <Trash className="h-5 w-5" />
+                  </button>
+                )}
+
+                <button
+                  onClick={onClose}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-md hover:bg-black/40"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
               {/* CONTENIDO DEL HEADER */}
               <div className="absolute bottom-0 left-0 right-0 p-8">
