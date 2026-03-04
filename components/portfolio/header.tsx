@@ -42,13 +42,11 @@ export function Header() {
               </div>
             </div>
 
-            <p className="max-w-2xl text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-400 mx-auto md:mx-0">
-              Ingeniero de Computación y Sistemas enfocado en optimizar la toma
-              de decisiones mediante soluciones de automatización y Business
-              Intelligence. Desarrollo procesos de integración y transformación
-              de datos con Python y SQL, y diseño dashboards en Power BI que
-              fortalecen la trazabilidad y confiabilidad del reporting
-              comercial.
+            <p className="mt-2 text-base text-slate-600 dark:text-slate-400 max-w-2xl">
+              Ingeniero de Computación y Sistemas especializado en Data & BI.
+              Diseño soluciones de integración y análisis de datos que mejoran
+              la trazabilidad del reporting y optimizan la toma de decisiones
+              comerciales mediante Python, SQL y Power BI.
             </p>
 
             {/* Acciones */}

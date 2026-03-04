@@ -120,13 +120,26 @@ export function ProjectModal({
                   {/* Información del Proyecto */}
                   <div className="flex-1 space-y-3">
                     {isEditing ? (
-                      <Input
-                        value={form.title}
-                        onChange={(e) =>
-                          setForm({ ...form, title: e.target.value })
-                        }
-                        className="bg-white/10 text-xl font-bold text-white border-white/20"
-                      />
+                      <div className="space-y-2">
+                        {/* Input para el Título */}
+                        <Input
+                          value={form.title}
+                          onChange={(e) =>
+                            setForm({ ...form, title: e.target.value })
+                          }
+                          className="bg-white/10 text-xl font-bold text-white border-white/20 focus:border-white"
+                          placeholder="Título del proyecto"
+                        />
+                        {/* NUEVO: Input para la URL de la Imagen */}
+                        <Input
+                          value={form.image}
+                          onChange={(e) =>
+                            setForm({ ...form, image: e.target.value })
+                          }
+                          className="bg-white/10 text-xs font-medium text-white/70 border-white/10 focus:border-white h-8"
+                          placeholder="URL de la imagen de fondo"
+                        />
+                      </div>
                     ) : (
                       <h2 className="text-3xl font-bold tracking-tight text-white drop-shadow-md">
                         {form.title}
