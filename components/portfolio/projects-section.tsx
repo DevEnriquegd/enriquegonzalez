@@ -36,7 +36,7 @@ export const ProjectsSection: React.FC<Props> = ({
   const allowEdit =
     process.env.NEXT_PUBLIC_ALLOW_EDIT === "true" || !!session?.user?.isAdmin;
   return (
-    <section className="w-full bg-white py-12 md:py-16">
+    <section id="projects" className="w-full bg-white py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header: Reducimos márgenes drásticamente en mobile */}
         <div className="mb-6 md:mb-10 text-center px-4">

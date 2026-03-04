@@ -13,6 +13,7 @@ import {
   getProjectTechnologies,
   type Project,
 } from "@/lib/data";
+import Navbar from "@/components/portfolio/navbar";
 
 export default function HomePage() {
   // 1. Estado inicial: vací­o; cargaremos desde la API al montar
@@ -141,6 +142,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
+      <Navbar />
       <Header />
       <SkillSection />
       <ProjectsSection

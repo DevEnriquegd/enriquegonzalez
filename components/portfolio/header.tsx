@@ -9,7 +9,6 @@ export default function Header() {
 
   return (
     <header>
-      <Navbar />
       <div className="border-b border-border bg-card">
         <div className="mx-auto max-w-6xl px-6 py-10 md:py-16">
           {/* Cambiamos flex-col-reverse a flex-col para que en móvil la foto suba */}
