@@ -8,22 +8,22 @@ import Providers from "../components/providers";
 const _inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Data Insights Hub | BI & Analytics Portfolio",
+  title: "Enrique Gonzalez | Data Analyst & Business Intelligence",
   description:
-    "Executive Portfolio for BI & Analytics Projects - Showcasing business impact through data-driven solutions",
-  generator: "v0.app",
+    "Portfolio profesional de Data Analyst | Business Intelligence. Desarrollo soluciones de análisis, integración y visualización de datos con Python, SQL y Power BI para optimizar decisiones empresariales.",
+
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/icon.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/icon.png",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/icon.png",
         type: "image/svg+xml",
       },
     ],
