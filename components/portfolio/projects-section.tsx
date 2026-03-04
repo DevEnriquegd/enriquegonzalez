@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { TechFilter } from "@/components/portfolio/tech-filter";
 import type { Project, Technology } from "@/lib/data";
 import { getProjectTechnologies } from "@/lib/data";
+import { CreateProjectModal } from "@/components/portfolio/create-project-modal";
+import UploadProject from "@/components/portfolio/upload-project";
 
 type Props = {
   projects: Project[];
@@ -14,6 +16,7 @@ type Props = {
   searchTerm: string;
   onSearch: (s: string) => void;
   onOpen: (p: Project) => void;
+  onCreate?: (p: Project) => void;
 };
 
 export const ProjectsSection: React.FC<Props> = ({
@@ -25,7 +28,9 @@ export const ProjectsSection: React.FC<Props> = ({
   searchTerm,
   onSearch,
   onOpen,
+  onCreate,
 }) => {
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   return (
     <section className="w-full bg-white py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-6">
@@ -45,24 +50,38 @@ export const ProjectsSection: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* Zona de Control: Forzamos una sola fila en mobile */}
+        {/* Zona de Control: Filtros + Botón de Acción Alineados */}
         <div className="mb-8 md:mb-12 max-w-4xl mx-auto px-4">
-          <div className="w-full flex items-center gap-2">
-            {" "}
-            {/* Flex para alinear en línea */}
-            <div className="flex-1 min-w-0">
+          {/* Zona de Control: Alineación por base */}
+          <div className="mb-8 md:mb-12 max-w-4xl mx-auto px-4">
+            <div className="flex w-full items-end gap-2">
               {" "}
-              {/* El input crece, pero permite que el filtro quepa */}
-              <TechFilter
-                technologies={usedTechnologies}
-                selectedTechs={selectedTechs}
-                onToggle={onToggleTech}
-                onClear={onClearFilters}
-                searchTerm={searchTerm}
-                onSearch={onSearch}
-              />
+              {/* items-end es el secreto para que las bases de los botones coincidan */}
+              <div className="flex-1 min-w-0">
+                <TechFilter
+                  technologies={usedTechnologies}
+                  selectedTechs={selectedTechs}
+                  onToggle={onToggleTech}
+                  onClear={onClearFilters}
+                  searchTerm={searchTerm}
+                  onSearch={onSearch}
+                />
+              </div>
+              {/* El componente ahora es h-10 internamente */}
+              <div className="shrink-0">
+                <UploadProject onClick={() => setIsCreateOpen(true)} />
+              </div>
             </div>
           </div>
+
+          {/* Modal de creación */}
+          <CreateProjectModal
+            isOpen={isCreateOpen}
+            onClose={() => setIsCreateOpen(false)}
+            onSave={(p) => {
+              onCreate?.(p);
+            }}
+          />
         </div>
 
         {/* Grid de Proyectos con Feedback Visual */}
