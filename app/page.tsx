@@ -45,8 +45,13 @@ export default function HomePage() {
           credentials: "same-origin",
         });
         if (res.ok) {
-          const data = await res.json();
-          if (mounted) setProjectsList((data as Project[]) || []);
+          const data = (await res.json()) as any[];
+          // Normalize backend field `image_url` -> `image` for compatibility
+          const normalized = (data || []).map((p: any) => ({
+            ...p,
+            image: p.image ?? p.image_url ?? "",
+          })) as Project[];
+          if (mounted) setProjectsList(normalized || []);
           return;
         }
       } catch (err) {

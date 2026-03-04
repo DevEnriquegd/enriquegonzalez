@@ -79,7 +79,14 @@ export function ProjectModal({
       .then(async (r) => {
         if (!r.ok) throw new Error("Error updating project");
         const updated = await r.json();
-        if (onSave) onSave(updated);
+        // normalize backend `image_url` -> `image` for frontend consistency
+        const normalized = {
+          ...updated,
+          image: (updated as any).image ?? (updated as any).image_url ?? "",
+        } as Project;
+        if (onSave) onSave(normalized);
+        // update local form with normalized payload
+        setForm(normalized);
         setIsEditing(false);
       })
       .catch((err) => {
@@ -182,7 +189,7 @@ export function ProjectModal({
                       <div className="space-y-2">
                         {/* Input para el Título */}
                         <Input
-                          value={form.title}
+                          value={form.title ?? ""}
                           onChange={(e) =>
                             setForm({ ...form, title: e.target.value })
                           }
@@ -191,7 +198,7 @@ export function ProjectModal({
                         />
                         {/* Input para la URL de GitHub */}
                         <Input
-                          value={form.githubUrl}
+                          value={form.githubUrl ?? ""}
                           onChange={(e) =>
                             setForm({ ...form, githubUrl: e.target.value })
                           }
@@ -200,7 +207,7 @@ export function ProjectModal({
                         />
                         {/* NUEVO: Input para la URL de la Imagen */}
                         <Input
-                          value={form.image}
+                          value={form.image ?? ""}
                           onChange={(e) =>
                             setForm({ ...form, image: e.target.value })
                           }
@@ -341,7 +348,7 @@ export function ProjectModal({
                             value={
                               form.businessVision[
                                 item.key as keyof typeof form.businessVision
-                              ]
+                              ] ?? ""
                             }
                             onChange={(e) =>
                               setForm({
@@ -421,7 +428,7 @@ export function ProjectModal({
                               value={
                                 form.technicalDetail[
                                   item.key as keyof typeof form.technicalDetail
-                                ]
+                                ] ?? ""
                               }
                               onChange={(e) =>
                                 setForm({
