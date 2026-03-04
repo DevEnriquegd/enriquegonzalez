@@ -99,7 +99,7 @@ export function ProjectModal({
                 <img
                   src={form.image}
                   alt={form.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                  className="absolute -inset-2 h-[calc(100%+1rem)] w-[calc(100%+1rem)] object-cover transition-transform duration-700 hover:scale-110 blur-xs"
                 />
               ) : (
                 <div className="absolute inset-0 bg-slate-900" />

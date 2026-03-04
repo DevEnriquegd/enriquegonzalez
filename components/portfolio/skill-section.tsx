@@ -24,10 +24,10 @@ export const SkillSection = () => {
         {/* Bento Grid Optimizado */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. CORE PROFESIONAL - Ocupa más espacio para denotar importancia */}
-          <div className="md:col-span-2 lg:col-span-2 rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-blue-500/40">
+          <div className="md:col-span-2 lg:col-span-2 rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-purple-500/40">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <Star className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-2 bg-purple-500/10 rounded-lg">
+                <BrainCircuit className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 Core Profesional
@@ -44,7 +44,7 @@ export const SkillSection = () => {
               ].map((s) => (
                 <span
                   key={s}
-                  className="px-3 py-1.5 bg-blue-500/10 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-semibold border border-blue-500/20"
+                  className="px-3 py-1.5 bg-purple-500/10 text-purple-700 dark:text-purple-400 rounded-lg text-xs font-semibold border border-purple-500/20"
                 >
                   {s}
                 </span>
@@ -75,12 +75,13 @@ export const SkillSection = () => {
           </div>
 
           {/* 3. MACHINE LEARNING - (Se mantiene igual pero con el color púrpura) */}
-          <div className="rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-purple-500/40">
+          <div className="rounded-2xl border bg-card p-6 transition-all hover:shadow-md hover:border-blue-500/40">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-purple-500/10 rounded-lg">
-                <BrainCircuit className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <BrainCircuit className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                {" "}
                 Machine Learning
               </h3>
             </div>
@@ -88,7 +89,7 @@ export const SkillSection = () => {
               {["Scikit-learn", "XGBoost", "Random Forest"].map((s) => (
                 <span
                   key={s}
-                  className="px-3 py-1.5 bg-purple-500/10 text-purple-700 dark:text-purple-400 rounded-lg text-xs font-semibold border border-purple-500/20"
+                  className="px-3 py-1.5 bg-blue-500/10 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-semibold border border-blue-500/20"
                 >
                   {s}
                 </span>
