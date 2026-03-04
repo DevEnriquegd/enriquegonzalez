@@ -156,26 +156,27 @@ export default function HomePage() {
         onOpen={(p) => setSelectedProject(p)}
         onCreate={handleCreateProject}
       />
-      <footer className="border-t border-slate-100 bg-background py-14">
+      <footer className="border-t border-slate-100 bg-white py-12 md:py-16">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-col items-center justify-between gap-10 md:flex-row md:items-start">
-            {/* Identidad y Propuesta de Valor */}
-            <div className="flex flex-col items-center md:items-start space-y-4">
-              <div>
-                <p className="text-xl font-extrabold text-slate-900 tracking-tight">
+          <div className="flex flex-col items-center justify-between gap-12 md:flex-row md:items-start md:gap-4">
+            {/* 1. Identidad: Alineación central en mobile, izquierda en desktop */}
+            <div className="flex flex-col items-center space-y-4 md:items-start">
+              <div className="text-center md:text-left">
+                <p className="text-lg font-black text-slate-900 tracking-tight">
                   Enrique Gonzalez<span className="text-blue-600">.</span>
                 </p>
-                <p className="mt-2 text-sm text-slate-600 max-w-xs leading-relaxed text-center md:text-left">
-                  Data Analyst & Business Intelligence. Integración, análisis y
-                  visualización de datos para decisiones empresariales claras.
+                <p className="mt-2 max-w-xs text-sm leading-relaxed font-medium text-slate-500">
+                  Data Analyst & Business Intelligence. Especializado en
+                  transformar datos en decisiones estratégicas mediante
+                  soluciones escalables.
                 </p>
               </div>
             </div>
 
-            {/* Conectividad y Footer Info */}
-            <div className="flex flex-col items-center md:items-end space-y-8">
-              {/* Enlaces Reales con Interacción Refinada */}
-              <div className="flex gap-6">
+            {/* 2. Conectividad y Status: Estructura organizada para mobile */}
+            <div className="flex flex-col items-center space-y-8 md:items-end">
+              {/* Enlaces con padding táctil mejorado para mobile */}
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 md:justify-end">
                 {[
                   {
                     name: "LinkedIn",
@@ -189,22 +190,25 @@ export default function HomePage() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] font-bold uppercase tracking-widest text-slate-500 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1 transition-all duration-300"
+                    className="text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all duration-300 border-b-2 border-transparent hover:border-blue-600 pb-1"
                   >
                     {link.name}
                   </a>
                 ))}
               </div>
 
-              {/* Stack y Ubicación */}
-              <div className="text-center md:text-right space-y-1.5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+              {/* Info de Cierre: Stack y Copyright */}
+              <div className="space-y-3 text-center md:text-right">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                   SQL · Python · Power BI · Machine Learning
                 </p>
-                <div className="flex flex-col md:flex-row items-center justify-end gap-1 md:gap-3 text-xs text-slate-400 font-medium">
+                <div className="flex flex-col items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-tighter text-slate-400 md:flex-row md:justify-end md:gap-3">
                   <span>© 2026 Enrique Gonzalez</span>
-                  <span className="hidden md:inline text-slate-300">•</span>
-                  <span>Trujillo, Perú</span>
+                  <span className="hidden md:inline text-slate-200">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                    Trujillo, Perú
+                  </span>
                 </div>
               </div>
             </div>
