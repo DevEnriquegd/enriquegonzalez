@@ -81,12 +81,8 @@ export default async function handler(
         ? out.technologies
         : [];
 
-      if (
-        (out.image_url === null ||
-          out.image_url === undefined ||
-          out.image_url === "") &&
-        out.image
-      ) {
+      // If an `image` value is provided prefer it and map to `image_url`.
+      if (out.image) {
         out.image_url = out.image;
       }
 
