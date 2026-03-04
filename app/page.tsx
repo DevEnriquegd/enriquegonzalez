@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Header } from "@/components/portfolio/header";
+import Header from "@/components/portfolio/header";
 import SkillSection from "@/components/portfolio/skill-section";
 import { TechFilter } from "@/components/portfolio/tech-filter";
 import ProjectsSection from "@/components/portfolio/projects-section";
@@ -164,8 +164,8 @@ export default function HomePage() {
                   Enrique Gonzalez<span className="text-blue-600">.</span>
                 </p>
                 <p className="mt-2 text-sm text-slate-600 max-w-xs leading-relaxed text-center md:text-left">
-                  Data Analyst & Business Intelligence. Transformando datos
-                  complejos en insights estratégicos.
+                  Data Analyst & Business Intelligence. Integración, análisis y
+                  visualización de datos para decisiones empresariales claras.
                 </p>
               </div>
             </div>

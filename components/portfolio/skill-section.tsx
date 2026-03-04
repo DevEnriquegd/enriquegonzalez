@@ -16,8 +16,8 @@ export const SkillSection = () => {
             Stack Tecnológico
           </h2>
           <p className="mt-2 text-base text-slate-600 dark:text-slate-400 max-w-2xl">
-            Mi arsenal técnico especializado en la ingeniería y ciencia de datos
-            para optimizar la toma de decisiones.
+            Tecnologías que utilizo para integrar, analizar y visualizar datos
+            con enfoque estratégico y resultados concretos.
           </p>
         </header>
 

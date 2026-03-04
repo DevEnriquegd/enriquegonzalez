@@ -41,15 +41,12 @@ export const ProjectsSection: React.FC<Props> = ({
         {/* Header: Reducimos márgenes drásticamente en mobile */}
         <div className="mb-6 md:mb-10 text-center px-4">
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
-            Proyectos y Casos de Éxito
+            Proyectos Destacados
           </h2>
           <div className="mt-2 flex justify-center">
             <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
-              Transformando{" "}
-              <span className="text-blue-600 font-semibold">
-                datos complejos
-              </span>{" "}
-              en decisiones accionables de alto impacto.
+              Análisis y desarrollos enfocados en generar visibilidad,
+              eficiencia y mejores decisiones comerciales.
             </p>
           </div>
         </div>
