@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-
-import { useState, useEffect, useCallback } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
-import type { Project, Technology } from "@/lib/data";
+import React, { useCallback, useEffect, useState } from "react";
+import { X, Plus } from "lucide-react";
+import type { Project } from "@/lib/data";
 import { technologies } from "@/lib/data";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -54,12 +54,11 @@ export function CreateProjectModal({
 }: CreateProjectModalProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [errors, setErrors] = useState<{ title?: string }>({});
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     },
     [onClose],
   );
@@ -75,12 +74,21 @@ export function CreateProjectModal({
     };
   }, [isOpen, handleEscape]);
 
+  const handleFileChange = (file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setFormData((prev) => ({ ...prev, image: result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate only required field: title
     if (!formData.title.trim()) {
-      setErrors({ title: "Project name is required" });
+      setErrors({ title: "El nombre del proyecto es requerido" });
       return;
     }
 
@@ -94,16 +102,16 @@ export function CreateProjectModal({
         "https://via.placeholder.com/600x400?text=Project+Placeholder",
       technologies: formData.technologies,
       businessVision: {
-        problem: formData.businessVision.problem || "Not specified",
-        decision: formData.businessVision.decision || "Not specified",
-        impact: formData.businessVision.impact || "Not specified",
+        problem: formData.businessVision.problem || "",
+        decision: formData.businessVision.decision || "",
+        impact: formData.businessVision.impact || "",
       },
       technicalDetail: {
-        architecture: formData.technicalDetail.architecture || "Not specified",
-        stack: formData.technicalDetail.stack || "Not specified",
-        dataFlow: formData.technicalDetail.dataFlow || "Not specified",
+        architecture: formData.technicalDetail.architecture || "",
+        stack: formData.technicalDetail.stack || "",
+        dataFlow: formData.technicalDetail.dataFlow || "",
       },
-      githubUrl: formData.githubUrl || "#",
+      githubUrl: formData.githubUrl || "",
     };
 
     onSave(newProject);
@@ -130,233 +138,181 @@ export function CreateProjectModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md"
       onClick={handleClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-modal-title"
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-xl bg-card shadow-2xl"
+        className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border p-5">
-          <h2
-            id="create-modal-title"
-            className="text-lg font-semibold text-foreground"
-          >
-            Create New Project
-          </h2>
+        {/* Header Ejecutivo */}
+        <div className="flex items-center justify-between border-b border-slate-100 p-5 bg-slate-50/50">
+          <div>
+            <h2
+              id="create-modal-title"
+              className="text-xl font-black text-slate-900 tracking-tight"
+            >
+              Subir Nuevo Caso de Éxito
+            </h2>
+            <p className="text-xs text-slate-500 font-medium">
+              Configura los detalles técnicos y de negocio.
+            </p>
+          </div>
           <button
             onClick={handleClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[#94A3B8] transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Close modal"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-200 hover:text-slate-600"
+            aria-label="Cerrar"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Form Content */}
         <form
           onSubmit={handleSubmit}
-          className="max-h-[calc(90vh-130px)] overflow-y-auto p-5"
+          className="max-h-[80vh] overflow-y-auto p-6 space-y-6"
         >
-          <div className="space-y-5">
-            {/* Project Name - Required */}
-            <div>
-              <label
-                htmlFor="title"
-                className="mb-1.5 block text-sm font-medium text-foreground"
-              >
-                Project Name <span className="text-destructive">*</span>
+          {/* Fila 1: Título y Repositorio */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                Nombre del proyecto *
               </label>
-              <input
-                id="title"
-                type="text"
+              <Input
+                placeholder="Ej. Telecom X: Predicción de Churn"
                 value={formData.title}
+                className="rounded-xl border-slate-200 focus:ring-blue-500/20"
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, title: e.target.value }));
                   if (errors.title) setErrors({});
                 }}
-                className={`w-full rounded-lg border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary ${
-                  errors.title ? "border-destructive" : "border-border"
-                }`}
-                placeholder="Enter project name"
               />
               {errors.title && (
-                <p className="mt-1 text-xs text-destructive">{errors.title}</p>
+                <p className="text-xs font-bold text-red-500">{errors.title}</p>
               )}
             </div>
 
-            {/* Image URL */}
-            <div>
-              <label
-                htmlFor="image"
-                className="mb-1.5 block text-sm font-medium text-foreground"
-              >
-                Image URL (absolute HTTPS link)
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                URL del Repositorio
               </label>
-              <input
-                id="image"
-                type="text"
-                value={formData.image}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, image: e.target.value }))
-                }
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="https://example.com/images/project-name.jpg"
-                title="Use a full https:// URL for the project image"
-              />
-            </div>
-
-            {/* GitHub URL */}
-            <div>
-              <label
-                htmlFor="githubUrl"
-                className="mb-1.5 block text-sm font-medium text-foreground"
-              >
-                GitHub URL
-              </label>
-              <input
-                id="githubUrl"
-                type="text"
+              <Input
+                placeholder="https://github.com/..."
                 value={formData.githubUrl}
+                className="rounded-xl border-slate-200 focus:ring-blue-500/20"
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
                     githubUrl: e.target.value,
                   }))
                 }
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="https://github.com/username/project"
               />
             </div>
+          </div>
 
-            {/* Technologies */}
-            <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">
-                Technologies
+          {/* Fila 2: Imagen y Preview */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                Imagen de Portada (URL)
               </label>
-              <div className="flex flex-wrap gap-2">
-                {technologies.map((tech) => (
-                  <button
-                    key={tech.id}
-                    type="button"
-                    onClick={() => handleTechToggle(tech.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
-                      formData.technologies.includes(tech.id)
-                        ? "border-transparent bg-primary text-primary-foreground"
-                        : "border-border bg-card text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{
-                        backgroundColor: formData.technologies.includes(tech.id)
-                          ? "#fff"
-                          : tech.color,
-                      }}
-                    />
-                    {tech.name}
-                  </button>
-                ))}
-              </div>
+              <Input
+                placeholder="https://images.unsplash.com/..."
+                value={formData.image}
+                className="rounded-xl border-slate-200 focus:ring-blue-500/20"
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, image: e.target.value }))
+                }
+              />
+              <p className="text-[10px] text-slate-400">
+                Se recomienda una resolución de 1280x720px.
+              </p>
             </div>
 
-            {/* Business Vision */}
-            <fieldset className="space-y-3">
-              <legend className="text-sm font-medium text-foreground">
-                Business Vision
-              </legend>
-              <div>
-                <label
-                  htmlFor="problem"
-                  className="mb-1 block text-xs text-[#475569]"
-                >
-                  Problem
-                </label>
-                <textarea
-                  id="problem"
-                  value={formData.businessVision.problem}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      businessVision: {
-                        ...prev.businessVision,
-                        problem: e.target.value,
-                      },
-                    }))
-                  }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the business problem..."
+            <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-dashed border-slate-200 bg-slate-50">
+              {formData.image ? (
+                <img
+                  src={formData.image}
+                  alt="preview"
+                  className="h-full w-full object-cover"
                 />
-              </div>
-              <div>
-                <label
-                  htmlFor="decision"
-                  className="mb-1 block text-xs text-[#475569]"
-                >
-                  Decision
-                </label>
-                <textarea
-                  id="decision"
-                  value={formData.businessVision.decision}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      businessVision: {
-                        ...prev.businessVision,
-                        decision: e.target.value,
-                      },
-                    }))
-                  }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the decision made..."
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="impact"
-                  className="mb-1 block text-xs text-[#475569]"
-                >
-                  Impact
-                </label>
-                <textarea
-                  id="impact"
-                  value={formData.businessVision.impact}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      businessVision: {
-                        ...prev.businessVision,
-                        impact: e.target.value,
-                      },
-                    }))
-                  }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the business impact..."
-                />
-              </div>
-            </fieldset>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center text-slate-400">
+                  <Plus className="mb-1 h-6 w-6 opacity-20" />
+                  <span className="text-[10px] font-bold uppercase">
+                    Vista previa
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
 
-            {/* Technical Detail */}
-            <fieldset className="space-y-3">
-              <legend className="text-sm font-medium text-foreground">
-                Technical Detail
-              </legend>
-              <div>
-                <label
-                  htmlFor="architecture"
-                  className="mb-1 block text-xs text-[#475569]"
+          {/* Tecnologías: Con scroll y mejor diseño */}
+          <div className="space-y-3">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Stack Tecnológico
+            </label>
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/50 p-3">
+              {technologies.map((tech) => (
+                <button
+                  key={tech.id}
+                  type="button"
+                  onClick={() => handleTechToggle(tech.id)}
+                  className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-[11px] font-bold transition-all ${
+                    formData.technologies.includes(tech.id)
+                      ? "bg-slate-900 text-white shadow-md"
+                      : "bg-white border border-slate-200 text-slate-600 hover:border-slate-400"
+                  }`}
                 >
-                  Architecture
-                </label>
-                <textarea
-                  id="architecture"
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: tech.color }}
+                  />
+                  {tech.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Descripción / Visión de Negocio */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Visión de Negocio (Problema)
+            </label>
+            <Textarea
+              placeholder="Describe el desafío de negocio y el impacto esperado..."
+              value={formData.businessVision.problem}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  businessVision: {
+                    ...prev.businessVision,
+                    problem: e.target.value,
+                  },
+                }))
+              }
+              className="min-h-25 rounded-xl border-slate-200 focus:ring-blue-500/20"
+            />
+          </div>
+
+          {/* Opciones Avanzadas */}
+          <div className="rounded-xl bg-blue-50/50 p-4 border border-blue-100/50">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((s) => !s)}
+              className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-blue-600 hover:text-blue-700"
+            >
+              {showAdvanced
+                ? "- Ocultar detalles técnicos"
+                : "+ Agregar detalles técnicos (Arquitectura)"}
+            </button>
+
+            {showAdvanced && (
+              <div className="mt-4 space-y-2">
+                <Textarea
+                  placeholder="Detalla la arquitectura, el flujo de datos o el stack específico..."
                   value={formData.technicalDetail.architecture}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -367,77 +323,27 @@ export function CreateProjectModal({
                       },
                     }))
                   }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the architecture..."
+                  className="min-h-30 rounded-xl border-blue-200 bg-white"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="stack"
-                  className="mb-1 block text-xs text-[#475569]"
-                >
-                  Stack
-                </label>
-                <textarea
-                  id="stack"
-                  value={formData.technicalDetail.stack}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      technicalDetail: {
-                        ...prev.technicalDetail,
-                        stack: e.target.value,
-                      },
-                    }))
-                  }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the tech stack..."
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="dataFlow"
-                  className="mb-1 block text-xs text-[#475569]"
-                >
-                  Data Flow
-                </label>
-                <textarea
-                  id="dataFlow"
-                  value={formData.technicalDetail.dataFlow}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      technicalDetail: {
-                        ...prev.technicalDetail,
-                        dataFlow: e.target.value,
-                      },
-                    }))
-                  }
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Describe the data flow..."
-                />
-              </div>
-            </fieldset>
+            )}
           </div>
 
-          {/* Footer Actions */}
-          <div className="mt-6 flex items-center justify-end gap-3">
+          {/* Acciones Finales */}
+          <div className="flex items-center justify-end gap-4 border-t border-slate-100 pt-6">
             <button
               type="button"
               onClick={handleClose}
-              className="rounded-lg border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="text-sm font-bold text-slate-400 transition-colors hover:text-slate-600"
             >
-              Cancel
+              Descartar
             </button>
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-blue-600 px-8 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700 active:scale-95"
             >
               <Plus className="h-4 w-4" />
-              Create Project
+              Publicar Proyecto
             </button>
           </div>
         </form>
@@ -445,3 +351,5 @@ export function CreateProjectModal({
     </div>
   );
 }
+
+export default CreateProjectModal;

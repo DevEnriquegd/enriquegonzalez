@@ -6,7 +6,7 @@ import SkillSection from "@/components/portfolio/skill-section";
 import { TechFilter } from "@/components/portfolio/tech-filter";
 import ProjectsSection from "@/components/portfolio/projects-section";
 import { ProjectModal } from "@/components/portfolio/project-modal";
-import { CreateProjectModal } from "@/components/portfolio/create-project-modal";
+import CreateProjectModal from "../components/portfolio/create-project-modal";
 import {
   technologies,
   projects as initialProjects,
@@ -124,6 +124,7 @@ export default function HomePage() {
         searchTerm={searchTerm}
         onSearch={setSearchTerm}
         onOpen={(p) => setSelectedProject(p)}
+        onCreate={handleCreateProject}
       />
       <footer className="border-t border-slate-100 bg-background py-14">
         <div className="mx-auto max-w-6xl px-6">
